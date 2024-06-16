@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EG.Shopping.ApiGateway")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e7d62d94ef9c4f6cda3113c93a57d993ce09a4b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a34b7d04382846d982ee153c2880cfa9c4934d42")]
 [assembly: System.Reflection.AssemblyProductAttribute("EG.Shopping.ApiGateway")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EG.Shopping.ApiGateway")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
