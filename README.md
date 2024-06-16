@@ -1,5 +1,6 @@
 Please run follwoing projects
-    1. EG.Shopping.Web: Angular 
+
+    1. EG.Shopping.Web: Angular  
     2. ApiGateways\EG.Shopping.ApiGateway: Dotnet 
     3. ApiGateways\EG.Shopping.Aggregator: Dotnet
     4. Services\EG.Cart: Dotnet
