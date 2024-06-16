@@ -3123,10 +3123,7 @@
         "net8.0"
       ],
       "sources": {
-        "https://api.nuget.org/v3/index.json": {},
-        "https://artifacts.dell.com/artifactory/api/nuget/dicosv-1004054-nuget-prd-local": {},
-        "https://artifacts.dell.com/artifactory/api/nuget/dsa-1000318-nuget-prd-local": {},
-        "https://artifacts.dell.com/artifactory/api/nuget/nuget": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
