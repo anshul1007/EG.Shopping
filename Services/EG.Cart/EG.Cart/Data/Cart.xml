@@ -1,0 +1,12 @@
+<carts>
+    <cart>
+        <id>dac3bbc1-3025-43a3-a167-8854953ad230</id>
+        <product>
+            <id>1</id>
+            <name>Product 1</name>
+            <price>100</price>
+        </product>
+        <quantity>1</quantity>
+    </cart>
+</carts>
+

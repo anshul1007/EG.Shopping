@@ -1,0 +1,12 @@
+@if (quantity() === 0) {
+<a (click)="addToCart()" class="btn border border-secondary rounded-pill px-3 text-primary"><i
+        class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+} @else {
+<a (click)="reduceQuantity()" class="btn border border-secondary px-3 text-primary"><i class="me-2 text-primary"></i> -
+</a>
+
+{{quantity()}}
+
+<a (click)="addQuantity()" class="btn border border-secondary px-3 text-primary"><i class="me-2 text-primary"></i> +
+</a>
+}

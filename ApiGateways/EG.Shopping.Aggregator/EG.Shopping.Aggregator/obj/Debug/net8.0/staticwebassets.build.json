@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "sTG03xWSK0mCceGvA52bQ4Y2EP6YVW0A1Ko75bnvskQ=",
+  "Source": "EG.Shipping.Aggregator",
+  "BasePath": "_content/EG.Shipping.Aggregator",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

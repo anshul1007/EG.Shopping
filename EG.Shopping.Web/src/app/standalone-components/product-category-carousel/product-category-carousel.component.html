@@ -1,0 +1,10 @@
+@if (categories$ | async) {
+<ngb-carousel>
+    <ng-template ngbSlide *ngFor="let category of (categories$ | async)">
+        <div class="picsum-img-wrapper">
+            <img [src]="category.image" alt="{{category.name}}" />
+            <a href="#" class="btn px-4 py-2 text-white rounded">{{category.name}}</a>
+        </div>
+    </ng-template>
+</ngb-carousel>
+}
