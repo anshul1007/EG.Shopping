@@ -1,4 +1,4 @@
-Please run follwoing projects
+Please run the following projects
 
     1. EG.Shopping.Web: Angular  
     2. ApiGateways\EG.Shopping.ApiGateway: Dotnet 
