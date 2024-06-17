@@ -239,7 +239,7 @@ describe('CartService', () => {
   it('should apply 0 shipping charge if cart total is more than cut off', () => {
     const product: Product = {
       sku: 'ABC123',
-      price: 10,
+      price: 810,
       discount: 0,
       tax: 0,
       name: 'Test Product',
@@ -252,7 +252,8 @@ describe('CartService', () => {
     service.applyCoupon({ percentage: 10, isValid: false, code: 'TEST10', id: '123', maxValue: 100 });
 
     service.cart$.subscribe((cart) => {
-      expect(cart.discountCoupon.percentage).toBe(0);
+      service.calculateTotalPrice(cart);
+      expect(cart.shippingCharge).toBe(0);
     });
   });
 });

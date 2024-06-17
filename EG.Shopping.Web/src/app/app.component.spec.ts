@@ -1,29 +1,42 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { RouterModule } from '@angular/router';
+import { NavbarComponent } from './standalone-components/navbar/navbar.component';
+import { Component } from '@angular/core';
+
+let component: AppComponent;
+let fixture: ComponentFixture<AppComponent>;
+
+@Component({
+  selector: 'app-navbar',
+  standalone: true,
+  template: '',
+  providers: [{ provide: NavbarComponent, useClass: MockNavbarComponent }],
+})
+export class MockNavbarComponent {
+  public exists = true;
+}
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent],
+      imports: [AppComponent, RouterModule.forRoot([])],
+
+    })
+    .overrideComponent(AppComponent, {
+      remove: { imports: [ NavbarComponent] },
+      add: { imports: [ MockNavbarComponent] }
     }).compileComponents();
+
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
   });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
   it(`should have the 'EG.Shopping.Web' title`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('EG.Shopping.Web');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, EG.Shopping.Web');
+    expect(component.title).toEqual('EG.Shopping.Web');
   });
 });

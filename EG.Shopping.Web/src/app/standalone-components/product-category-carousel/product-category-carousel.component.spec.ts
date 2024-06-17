@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProductCategoryCarouselComponent } from './product-category-carousel.component';
+import { BackendApiService } from '../../services/backend-api.service';
 
 describe('ProductCategoryCarouselComponent', () => {
   let component: ProductCategoryCarouselComponent;
@@ -8,7 +9,15 @@ describe('ProductCategoryCarouselComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProductCategoryCarouselComponent]
+      imports: [ProductCategoryCarouselComponent],
+      providers: [
+        {
+          provide: BackendApiService,
+          useValue: {
+            getCategories: jasmine.createSpy('getCategories')
+          }
+        }
+      ]
     })
     .compileComponents();
 

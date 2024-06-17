@@ -1,6 +1,6 @@
 <div class="container-fluid py-5" style="padding-top: 150px !important;">
     <div class="container py-5">
-        @if (cart().cartId && cart().items.length > 0) {
+        @if (cart() && cart().cartId && cart().items.length > 0) {
         <div class="table-responsive">
             <table class="table">
                 <thead>

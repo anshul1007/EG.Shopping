@@ -2,7 +2,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AddToCartComponent } from './add-to-cart.component';
 import { CartService } from '../../services/cart.service';
-import { Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { Cart } from '../../models/cart';
 import { Product } from '../../models/product';
 import { Input, input, signal } from '@angular/core';
@@ -14,13 +14,37 @@ describe('AddToCartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AddToCartComponent],
-      providers: [CartService]
+      imports: [AddToCartComponent],
+      providers: [{
+        provide: CartService,
+        useValue: {
+          cart$: jasmine.createSpy('cart$'),
+          addQuantity: jasmine.createSpy('addQuantity'),
+          reduceQuantity: jasmine.createSpy('reduceQuantity'),
+          addToCart: jasmine.createSpy('addToCart'),
+        }
+      }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddToCartComponent);
     component = fixture.componentInstance;
     cartService = TestBed.inject(CartService);
+    cartService.cart$ = of({
+      items: [{
+        sku: '123',
+        quantity: 2,
+        tax: 0,
+        discount: 0,
+        name: '',
+        price: 0,
+        unit: '',
+        displayPrice: '',
+        image: ''
+      }], coupon: { percentage: 0, isValid: false, code: '', id: '', maxValue: 0 }
+    });
+
+    const product = signal({sku: '123'})
+    component.product = product as unknown as typeof fixture.componentInstance.product;
     fixture.detectChanges();
   });
 
@@ -32,120 +56,23 @@ describe('AddToCartComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update the quantity when the cart changes', () => {
-    const cart: Cart = {
-      items: [
-        {
-          sku: '123', quantity: 2,
-          tax: 0,
-          discount: 0,
-          name: '',
-          price: 0,
-          unit: '',
-          displayPrice: '',
-          image: ''
-        },
-        {
-          sku: '456', quantity: 3,
-          tax: 0,
-          discount: 0,
-          name: '',
-          price: 0,
-          unit: '',
-          displayPrice: '',
-          image: ''
-        }
-      ],
-      cartId: ''
-    };
-    const product: Product = {
-      sku: '123',
-      tax: 0,
-      discount: 0,
-      name: '',
-      price: 0,
-      unit: '',
-      displayPrice: '',
-      image: ''
-    };
-
-    spyOn(cartService.cart$, 'pipe').and.returnValue(
-      new Subject<Cart>().asObservable()
-    );
-
-    TestBed.runInInjectionContext(() => {
-      component.product = Input('Test user')
-    });
-
-    component.ngOnInit();
-
-    expect(component.quantity).toBe(2);
+  it('should subscribe to cart$ and quantity', () => {
+    expect(component.quantity()).toBe(2);
   });
 
-  it('should add product to cart', () => {
-    const product: Product = {
-      sku: '123',
-      tax: 0,
-      discount: 0,
-      name: '',
-      price: 0,
-      unit: '',
-      displayPrice: '',
-      image: ''
-    };
-
-    spyOn(cartService, 'addToCart');
-
-    TestBed.runInInjectionContext(() => {
-      component.product = Input('Test user')
-    });
-    component.addToCart();
-
-    expect(cartService.addToCart).toHaveBeenCalledWith(product);
-  });
-
-  it('should add quantity to cart', () => {
-    const product: Product = {
-      sku: '123',
-      tax: 0,
-      discount: 0,
-      name: '',
-      price: 0,
-      unit: '',
-      displayPrice: '',
-      image: ''
-    };
-
-    spyOn(cartService, 'addQuantity');
-
-    TestBed.runInInjectionContext(() => {
-      component.product = Input('Test user')
-    });
+  it('should add quantity to cart item', () => {
     component.addQuantity();
-
-    expect(cartService.addQuantity).toHaveBeenCalledWith(product);
+    expect(cartService.addQuantity).toHaveBeenCalledWith({sku: '123'} as unknown as Product);
   });
 
-  it('should reduce quantity from cart', () => {
-    const product: Product = {
-      sku: '123',
-      tax: 0,
-      discount: 0,
-      name: '',
-      price: 0,
-      unit: '',
-      displayPrice: '',
-      image: ''
-    };
-
-    spyOn(cartService, 'reduceQuantity');
-
-    TestBed.runInInjectionContext(() => {
-      component.product = Input('Test user')
-    });
+  it('should reduce quantity from cart item', () => {
     component.reduceQuantity();
+    expect(cartService.reduceQuantity).toHaveBeenCalledWith({sku: '123'} as unknown as Product);
+  });
 
-    expect(cartService.reduceQuantity).toHaveBeenCalledWith(product);
+  it('should add to cart', () => {
+    component.addToCart();
+    expect(cartService.addToCart).toHaveBeenCalledWith({sku: '123'} as unknown as Product);
   });
 
   it('should unsubscribe from observables on component destroy', () => {

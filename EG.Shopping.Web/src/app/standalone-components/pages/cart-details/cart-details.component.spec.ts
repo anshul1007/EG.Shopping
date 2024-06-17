@@ -4,6 +4,7 @@ import { Product } from "../../../models/product";
 import { CartService } from "../../../services/cart.service";
 import { BackendApiService } from "../../../services/backend-api.service";
 import { Observable, delay, of, takeUntil } from "rxjs";
+import { Cart } from "../../../models/cart";
 
 describe('CartDetailsComponent', () => {
   let component: CartDetailsComponent;
@@ -19,11 +20,12 @@ describe('CartDetailsComponent', () => {
         {
           provide: CartService,
           useValue: {
-            cart$: of({ items: [], coupon: { percentage: 0, isValid: false, code: '', id: '', maxValue: 0 } }),
+            cart$: jasmine.createSpy('cart$'),
             addQuantity: jasmine.createSpy('addQuantity'),
             reduceQuantity: jasmine.createSpy('reduceQuantity'),
             removeProduct: jasmine.createSpy('removeProduct'),
             applyCoupon: jasmine.createSpy('applyCoupon'),
+            calculateTotalPrice: jasmine.createSpy('calculateTotalPrice').and.callFake((cart: Cart) => cart)
           },
         },
         {
@@ -39,14 +41,18 @@ describe('CartDetailsComponent', () => {
     fixture = TestBed.createComponent(CartDetailsComponent);
     component = fixture.componentInstance;
     cartService = TestBed.inject(CartService);
+    cartService.cart$ = of({ items: [], coupon: { percentage: 0, isValid: false, code: '', id: '', maxValue: 0 } });
     backendApiService = TestBed.inject(BackendApiService);
     fixture.detectChanges();
   });
 
-
-
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should subscribe to cart$ and update cart', () => {
+    expect(cartService.calculateTotalPrice).toHaveBeenCalled();
+    expect(component.cart).not.toBeUndefined();
   });
 
   it('should add quantity to cart item', () => {
@@ -70,7 +76,7 @@ describe('CartDetailsComponent', () => {
   it('should apply coupon to cart when coupon is valid', () => {
     const couponResponse = { isValid: true, percentage: 10, code: 'TEST', id: '123', maxValue: 100 };
     (backendApiService.verifyCoupon as jasmine.Spy).and.returnValue(of(couponResponse)),
-    component.applyCoupon();
+      component.applyCoupon();
     expect(cartService.applyCoupon).toHaveBeenCalledOnceWith(couponResponse);
   });
 
@@ -78,7 +84,17 @@ describe('CartDetailsComponent', () => {
     const couponResponse = { isValid: false, percentage: 10, code: 'TEST', id: '123', maxValue: 100 };
     (backendApiService.verifyCoupon as jasmine.Spy).and.returnValue(of(couponResponse));
     component.applyCoupon();
-    expect(cartService.applyCoupon).toHaveBeenCalledOnceWith({ percentage: 0, isValid: false, code: '', id: '', maxValue: 0});
+    expect(cartService.applyCoupon).toHaveBeenCalledOnceWith({ percentage: 0, isValid: false, code: '', id: '', maxValue: 0 });
+  });
+
+  it('should unsubscribe from observables on component destroy', () => {
+    spyOn(component.componentDestroyed$, 'next');
+    spyOn(component.componentDestroyed$, 'complete');
+
+    component.ngOnDestroy();
+
+    expect(component.componentDestroyed$.next).toHaveBeenCalledWith(true);
+    expect(component.componentDestroyed$.complete).toHaveBeenCalled();
   });
 
   afterEach(() => {
