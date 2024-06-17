@@ -57,22 +57,26 @@ export class CartService {
   addQuantity(product: Product) {
     // add quantity of the product in the cart
     const cart = this.getFromLocalStorage();
-    const item = cart.items.find(i => i.sku === product.sku);
-    if (item) {
-      item.quantity = item.quantity + 1;
-      this.setToLocalStorage(cart);
+    if (cart.items) {
+      const item = cart.items.find(i => i.sku === product.sku);
+      if (item) {
+        item.quantity = item.quantity + 1;
+        this.setToLocalStorage(cart);
+      }
     }
   }
 
   reduceQuantity(product: Product) {
     const cart = this.getFromLocalStorage();
-    const item = cart.items.find(i => i.sku === product.sku);
-    if (item) {
-      item.quantity = item.quantity - 1;
-      if (item.quantity === 0) {
-        cart.items = cart.items.filter(i => i.sku !== product.sku);
+    if (cart.items) {
+      const item = cart.items.find(i => i.sku === product.sku);
+      if (item) {
+        item.quantity = item.quantity - 1;
+        if (item.quantity === 0) {
+          cart.items = cart.items.filter(i => i.sku !== product.sku);
+        }
+        this.setToLocalStorage(cart);
       }
-      this.setToLocalStorage(cart);
     }
   }
 
@@ -92,7 +96,7 @@ export class CartService {
     });
     cart.total = cartTotal;
     cart.discountTotal = (cart.total * (cart.discount || 0) / 100);
-    // apply discount
+    // apply shippingCharge
     if (cart.total > 750) {
       cart.shippingCharge = 0;
     } else {
@@ -104,9 +108,11 @@ export class CartService {
 
   applyCoupon(couponCode: CouponCode) {
     const cart = this.getFromLocalStorage();
-    cart.discount = couponCode.percentage;
-    cart.discountCoupon = couponCode.code;
-    this.setToLocalStorage(cart);
+    if (couponCode.isValid) {
+      cart.discount = couponCode.percentage;
+      cart.discountCoupon = couponCode.code;
+      this.setToLocalStorage(cart);
+    }
   }
 
   placeOrder(value: any) {
